@@ -1,0 +1,15 @@
+PUT /indocase
+{
+    "mappings" : {
+        "properties" : {
+            "CreationDate" : { "type" : "date" },
+            "Site" : { "type" : "text" },
+            "ExternalID" : { "type" : "text" },
+            "RegistrationDate" : { "type" : "text" },
+            "Classification" : { "type" : "text" },
+            "AllParties" : { "type" : "text" },
+            "Status" : { "type" : "text" },
+            "DetailsLink" : { "type" : "text" }
+        }      
+    }
+}

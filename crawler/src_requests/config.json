@@ -1,0 +1,15 @@
+{
+    "elaborationsDirectory": "..//elaborations//",
+    "fixedPagePrefix": "/list_perkara/page/",
+    "urlList": [
+        {
+            "url": "http://sipp.pn-pekanbaru.go.id", "totPages":"7273", "fixedPageSuffix":"/NDJVb21TTUNucVE5ckIvbFJDQk5HdVc1MC9ENDh6Y0FhdjRtUG5YSEpYeG9tNDVsamNYTHVPMGxNVHBYdlQ5NEtwbzlxRUhocTVhbkQxdnBVMjVpemc9PQ==/key/col/2"
+        },
+        {
+            "url": "http://sipp.pn-balikpapan.go.id", "totPages":"2224", "fixedPageSuffix":"/VW5ZQVpBY2xWMW9ET1ZSa1hHbGZLUUJzQWp0ZGNGSmhBaU5VV0FZbEJqUUphd3d5VW5OVFkxQnNBenRaT0ZjMUJXMD0=/key/col/2"
+        },
+        {
+            "url": "http://sipp.pn-sidoarjo.go.id", "totPages":"17760", "fixedPageSuffix":"/S3BwejNkS2x5cGpudHprTVZPMG90V2VpSDVPQlQ0TDJ6TERnQW1EZkEzNWRXR0taYUdkSElhU1N1UWlLQk16RjB0UFkwVHlmVThZM0U5aFo5STR0b0E9PQ==/key/col/2"
+        }
+    ]
+}

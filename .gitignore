@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Crawler elaborations
+crawler/elborations
+
+# Crawler unfinished methods
+crawler/src_async
+crawler/src_multiParallel
+
+# visual studio
+.vscode

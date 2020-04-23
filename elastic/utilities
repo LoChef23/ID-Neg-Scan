@@ -1,0 +1,9 @@
+HOW TO RUN ELASTIC
+1. open command line
+2. go to 'C:\Program Files\elasticsearch-7.5.2-windows-x86_64\elasticsearch-7.5.2\bin'
+3. run '.\elasticsearch.bat'
+
+HOW TO RUN KIBANA
+1. open command line
+2. go to 'C:\Program Files\kibana-7.5.2-windows-x86_64\kibana-7.5.2-windows-x86_64\bin'
+3. run 'kibana'
