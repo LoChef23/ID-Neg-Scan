@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import uuid
 
-class CasesParser():
+class DataManager():
 
     def create_data_file(self, elaborationDirectory, elaborationDate):
         dataFile = open(elaborationDirectory + 'full_data' + '_' + elaborationDate + '.json', 'a+')

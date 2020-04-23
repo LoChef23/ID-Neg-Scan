@@ -1,6 +1,6 @@
 import requests
 
-class Navigation():
+class NavigationManager():
     
     def __init__(self):
         self.session = requests.Session()

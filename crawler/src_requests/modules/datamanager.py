@@ -1,7 +1,11 @@
 from bs4 import BeautifulSoup
 import uuid
 
-class CasesParser():
+class DataManager():
+
+    def create_data_file(self, elaborationDirectory, elaborationDate):
+        dataFile = open(elaborationDirectory + 'full_data' + '_' + elaborationDate + '.json', 'a+')
+        return dataFile
 
     def extract_cases(self, html, startUrl, elaborationDate):
         extractedCases = []
@@ -59,6 +63,7 @@ class CasesParser():
                     "Status": status,
                     "DetailsLink": detailsLink
                 }
+                
                 extractedCases.append(caseProperties)
 
                 rowPosition += 1   

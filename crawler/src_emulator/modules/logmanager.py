@@ -1,7 +1,7 @@
 from datetime import datetime
 from os import mkdir
 
-class Log():
+class LogManager():
  
     def create_log_file(self, elaborationDirectory, elaborationDate):
         logFile = open(elaborationDirectory + 'full_logs' + '_' + elaborationDate + '.txt', 'a+')
@@ -14,7 +14,7 @@ class Log():
         if len(data) > 0:
             logFile.write('\n')
         logFile.write(timestamp + ' - ' + 'Elaborating' + ' - ' + currentUrl)
-    
+
     def add_error_log(self, logFile, exception):
         timestamp = str(datetime.now())
         logFile.seek(0)

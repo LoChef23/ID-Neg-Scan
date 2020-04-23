@@ -1,9 +1,9 @@
 from os import path, mkdir
 import json
 from datetime import datetime
-from modules.logger import Log
-from modules.navigator import Navigation
-from modules.extractor import CasesParser
+from modules.logmanager import LogManager
+from modules.navigationmanager import NavigationManager
+from modules.datamanager import DataManager
 from multiprocessing import Process
 
 
@@ -20,24 +20,24 @@ def url_parallel_parsing(elaborationsDirectory, startingUrl, totPages, fixedPage
         mkdir(siteElaborationDirectory)
     
     # instantiates the log class and creates the log file and data file
-    log = Log()
-    logFile = log.create_log_file(siteElaborationDirectory, elaborationDate)
-    dataFile = open(siteElaborationDirectory + 'full_data' + '_' + elaborationDate + '.json', 'a+')
+    logManager = LogManager()
+    logFile = logManager.create_log_file(siteElaborationDirectory, elaborationDate)
+    dataManager = DataManager()
+    dataFile = dataManager.create_data_file(siteElaborationDirectory, elaborationDate)
     
     # initializes the client session and the parser and the page number
-    navigationManger = Navigation()
-    dataManager = CasesParser()
+    navigationManger = NavigationManager()
     pageNumber = 0
 
     # tries to crawl the first page
     try:
         print(f'Requesting {startingUrl}')
-        log.add_checkpoint_log(logFile, startingUrl)
+        logManager.add_checkpoint_log(logFile, startingUrl)
         response = navigationManger.request_url(startingUrl)
         extractedCases = dataManager.extract_cases(response, startingUrl, elaborationDate)
         dataManager.store_cases(dataFile, extractedCases)
     except Exception as ex:
-        log.add_error_log(logFile, "ERROR: " + str(ex))
+        logManager.add_error_log(logFile, "ERROR: " + str(ex))
     
     #re-sets the page number after the first page has been don
     pageNumber = 1
@@ -47,13 +47,13 @@ def url_parallel_parsing(elaborationsDirectory, startingUrl, totPages, fixedPage
         try:
             url = navigationManger.calculate_next_url(startingUrl, pageNumber, fixedPageSuffix, fixedPagePrefix)
             print(f'Requesting {url[0]}')
-            log.add_checkpoint_log(logFile, url[0])
+            logManager.add_checkpoint_log(logFile, url[0])
             response = navigationManger.request_url(url[0])
             pageNumber = url[1]
             extractedCases = dataManager.extract_cases(response, startingUrl, elaborationDate)
             dataManager.store_cases(dataFile, extractedCases)
         except Exception as ex:
-            log.add_error_log(logFile, "ERROR: " + str(ex))
+            logManager.add_error_log(logFile, "ERROR: " + str(ex))
 
 if __name__ == '__main__':
     
@@ -69,13 +69,13 @@ if __name__ == '__main__':
     if not path.exists(elaborationsDirectory):
         mkdir(elaborationsDirectory)
     
-    # starts parallelism on different urls using multiprocessing
+    # starts jobs parallelism on different urls using multiprocessing
     jobs = []
     for startingUrl in urls:
        p = Process(target=url_parallel_parsing, args=(elaborationsDirectory, startingUrl['url'], int(startingUrl['totPages']), startingUrl['fixedPageSuffix'], fixedPagePrefix))
        p.start()
        jobs.append(p)
     
-    #close the various processes
+    #close the multiprocessing action once all the jobs are done
     for job in jobs:
         job.join()

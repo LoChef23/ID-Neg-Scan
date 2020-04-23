@@ -1,9 +1,9 @@
 from os import path, mkdir
 import json
 from datetime import datetime
-from modules.logger import Log
-from modules.navigator import Navigation
-from modules.extractor import CasesParser
+from modules.logmanager import LogManager
+from modules.navigationmanager import NavigationManager
+from modules.datamanager import DataManager
 from multiprocessing import Process
 from selenium.webdriver.chrome.options import Options
 
@@ -14,31 +14,31 @@ def url_parallel_parsing(localDriverPath, startingUrl):
     if not path.exists(elaborationDirectory):
         mkdir(elaborationDirectory)
     
-    log = Log()
+    logManager = LogManager()
     chrome_options = Options()  
     #chrome_options.add_argument("--headless")
-    sippNavigation = Navigation(localDriverPath, chrome_options)
-    casesParser = CasesParser()
+    navigationManager = NavigationManager(localDriverPath, chrome_options)
+    dataManager = DataManager()
     
-    logFile = log.create_log_file(elaborationDirectory, elaborationDate)
-    dataFile = casesParser.create_data_file(elaborationDirectory, elaborationDate)
+    logFile = logManager.create_log_file(elaborationDirectory, elaborationDate)
+    dataFile = dataManager.create_data_file(elaborationDirectory, elaborationDate)
     
     try:
-        sippNavigation.get_start_page(startingUrl)
-        log.add_checkpoint_log(logFile, sippNavigation.currentUrl)
-        extractedCases = casesParser.extract_cases(sippNavigation.find_cases_table(), startingUrl, elaborationDate)
-        casesParser.store_cases(dataFile, extractedCases)
+        navigationManager.get_start_page(startingUrl)
+        logManager.add_checkpoint_log(logFile, navigationManager.currentUrl)
+        extractedCases = dataManager.extract_cases(navigationManager.find_cases_table(), startingUrl, elaborationDate)
+        dataManager.store_cases(dataFile, extractedCases)
     except Exception as exception:
-        log.add_checkpoint_log(logFile, "Error: " + str(exception))
+        logManager.add_checkpoint_log(logFile, "Error: " + str(exception))
     
-    while sippNavigation.check_for_next_page_existence():
+    while navigationManager.check_for_next_page_existence():
         try:
-            sippNavigation.get_next_page(startingUrl)
-            log.add_checkpoint_log(logFile, sippNavigation.currentUrl)
-            extractedCases = casesParser.extract_cases(sippNavigation.find_cases_table(), startingUrl, elaborationDate)
-            casesParser.store_cases(dataFile, extractedCases)
+            navigationManager.get_next_page(startingUrl)
+            logManager.add_checkpoint_log(logFile, navigationManager.currentUrl)
+            extractedCases = dataManager.extract_cases(navigationManager.find_cases_table(), startingUrl, elaborationDate)
+            dataManager.store_cases(dataFile, extractedCases)
         except Exception as exception:
-            log.add_checkpoint_log(logFile, "Error: " + str(exception))
+            logManager.add_checkpoint_log(logFile, "Error: " + str(exception))
 
 
 if __name__ == '__main__':
@@ -48,6 +48,11 @@ if __name__ == '__main__':
     localDriverPath = configData['driverPath']
     urls = configData['urlList']
     
-
+    jobs = []
     for startingUrl in urls:
-        Process(target=url_parallel_parsing, args=(localDriverPath, startingUrl['url'])).start()
+        p = Process(target=url_parallel_parsing, args=(localDriverPath, startingUrl['url']))
+        p.start()
+        jobs.append(p)
+    
+    for job in jobs:
+        job.join()

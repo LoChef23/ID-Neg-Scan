@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-class Navigation():
+class NavigationManager():
     
     def __init__(self, localDriverPath, chrome_options):
         
