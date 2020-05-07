@@ -4,7 +4,7 @@ import uuid
 class DataManager():
 
     def create_data_file(self, elaborationDirectory, elaborationDate):
-        dataFile = open(elaborationDirectory + 'full_data' + '_' + elaborationDate + '.json', 'a+')
+        dataFile = open(elaborationDirectory + 'full_' + elaborationDate + '_data' + '.json', 'a+')
         return dataFile
 
     def extract_cases(self, html, startUrl, elaborationDate):
