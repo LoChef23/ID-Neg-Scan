@@ -7,6 +7,10 @@ class LogManager():
         logFile = open(elaborationDirectory + 'full_' + elaborationDate + '_logs' '.txt', 'a+')
         return logFile
     
+    def create_incremental_log_file(self, elaborationDirectory, elaborationDate):
+        logFile = open(elaborationDirectory + 'incr_' + elaborationDate + '_logs' '.txt', 'a+')
+        return logFile
+    
     def create_urls_failed_recovery_file(self, elaborationDirectory, elaborationDate):
         urlsFailedRecoveryFile = open(elaborationDirectory + 'full_' + elaborationDate + '_urlsFailedRecovery' '.txt', 'a+')
         return urlsFailedRecoveryFile

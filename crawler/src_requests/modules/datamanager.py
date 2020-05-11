@@ -1,11 +1,17 @@
 from bs4 import BeautifulSoup
 import uuid
+from datetime import datetime, timedelta
 
 class DataManager():
 
     def create_data_file(self, elaborationDirectory, elaborationDate):
         dataFile = open(elaborationDirectory + 'full_' + elaborationDate + '_data' + '.json', 'a+')
         return dataFile
+    
+    def create_incremental_data_file(self, elaborationDirectory, elaborationDate):
+        dataFile = open(elaborationDirectory + 'incr_' + elaborationDate + '_data' + '.json', 'a+')
+        return dataFile
+
 
     def extract_cases(self, html, startUrl, elaborationDate):
         extractedCases = []
@@ -72,6 +78,31 @@ class DataManager():
                 continue
         
         return extractedCases
+    
+    def check_incremetal_cases(self, extractedCases, updateDays):
+        currentDate = datetime.now()
+
+        limitDate = currentDate - timedelta(int(updateDays))
+        limitDate = list(map(int, limitDate.strftime('%d-%m-%Y').split('-')))
+        limitDate = datetime(limitDate[2],limitDate[1],limitDate[0])
+
+        incrementalCases = list(extractedCases)
+
+        for extractedCase in extractedCases:
+            limitReached = False
+            registrationDate = extractedCase['RegistrationDate'] #dd-mm-yyyy'
+            registrationDate = list(map(int, registrationDate.split('-')))
+            registrationDate = datetime(registrationDate[2],registrationDate[1],registrationDate[0])
+
+            dateDifference = registrationDate - limitDate
+            days = int(dateDifference.days)
+
+            if days < 0:
+                incrementalCases.remove(extractedCase)
+                limitReached = True
+
+
+        return incrementalCases, limitReached
 
     def convert_registration_date(self, rawRegistrationDate):
         if len(rawRegistrationDate) > 0:
