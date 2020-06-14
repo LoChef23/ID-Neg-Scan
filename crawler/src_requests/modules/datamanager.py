@@ -78,12 +78,11 @@ class DataManager():
                 continue
         
         return extractedCases
-    
-    def check_incremetal_cases(self, extractedCases, updateDays):
-        currentDate = datetime.now()
 
-        limitDate = currentDate - timedelta(int(updateDays))
-        limitDate = list(map(int, limitDate.strftime('%d-%m-%Y').split('-')))
+    # limit date should be provided as string in the format dd-mm-yyyy'
+    def check_incremetal_cases(self, extractedCases, limitDate):
+        
+        limitDate = list(map(int, limitDate.split('-')))
         limitDate = datetime(limitDate[2],limitDate[1],limitDate[0])
 
         incrementalCases = list(extractedCases)
@@ -94,10 +93,7 @@ class DataManager():
             registrationDate = list(map(int, registrationDate.split('-')))
             registrationDate = datetime(registrationDate[2],registrationDate[1],registrationDate[0])
 
-            dateDifference = registrationDate - limitDate
-            days = int(dateDifference.days)
-
-            if days < 0:
+            if registrationDate < limitDate:
                 incrementalCases.remove(extractedCase)
                 limitReached = True
 
