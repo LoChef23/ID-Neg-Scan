@@ -7,6 +7,7 @@ from modules.datamanager import DataManager
 from multiprocessing import Process
 
 def retrieve_cases_info_from_url(urlToBeRequested, startingUrlOfTheProvince, navigationManger, dataManager, dataFile, logManager, logFile, elaborationDate):
+    
     logManager.add_checkpoint_log(logFile, urlToBeRequested)
     try:
         response = navigationManger.request_url(urlToBeRequested)
