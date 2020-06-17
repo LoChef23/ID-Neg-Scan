@@ -16,67 +16,43 @@ class DataManager():
     def extract_cases(self, html, startUrl, elaborationDate):
         extractedCases = []
         soup = BeautifulSoup(html, 'lxml')
-        casesGrid = soup.find(id = 'tablePerkaraAll')
-        rows = casesGrid.find_all('tr')
+        casesGrid = soup.find(id = 'tablePerkaraAll')   
+        rows = casesGrid.find_all('tr')              
         rowPosition = 0
-        for row in rows:
+        for row in rows:            
             if rowPosition != 0:
-                columns = row.find_all('td')
-                columnPosition = 0
-                for column in columns:
-                    if columnPosition == 0:
-                        #caseSiteNumber = column.get_text()
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 1:
-                        caseIdentifier = column.get_text()
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 2:
-                        rawRegistrationDate = column.get_text()
-                        registrationDate = self.convert_registration_date(rawRegistrationDate)
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 3:
-                        classification = column.get_text()
-                        columnPosition +=1
-                        continue 
-                    if columnPosition == 4:
-                        allParties = column.get_text()
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 5:
-                        status = column.get_text()
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 6:
-                        #duration = column.get_text()
-                        columnPosition +=1
-                        continue
-                    if columnPosition == 7:
-                        linkAttribute = column.find('a', href=True)
-                        detailsLink = linkAttribute['href']
-                        columnPosition +=1
-                        continue
-
+                columns = row.find_all('td')                           
+                columnPosition = 0        
+                try:        
+                    registrationdate = self.convert_registration_date(columns[2].get_text())                                    
+                except Exception as e:
+                    # log
+                    print(e)
+                try:
+                    detailslink = columns[7].find('a', href=True)['href']   
+                except Exception as e:
+                    # log
+                    print(e)     
+               
                 caseProperties = {
-                    "Site": startUrl,
-                    "CreationDate": elaborationDate,
-                    "CaseID": caseIdentifier,
-                    "RegistrationDate": registrationDate,
-                    "Classification": classification,
-                    "AllParties": allParties,
-                    "Status": status,
-                    "DetailsLink": detailsLink
-                }
-                
+                        "Site": startUrl,
+                        "CreationDate": elaborationDate,
+                        "CaseID": columns[1].get_text(),
+                        "RegistrationDate": registrationdate,
+                        "Classification": columns[3].get_text(),
+                        "AllParties": columns[4].get_text(),
+                        "Status": columns[5].get_text(),
+                        "DetailsLink": detailslink
+                    }
                 extractedCases.append(caseProperties)
+                # log
+                print(len(extractedCases))
 
                 rowPosition += 1   
             else:
                 rowPosition += 1
-                continue
-        
+                continue        
+                
         return extractedCases
 
     # limit date should be provided as string in the format dd-mm-yyyy'
@@ -141,3 +117,5 @@ class DataManager():
             dataFile.write(uniqueCaseIDStr)
             dataFile.write('\n')
             dataFile.write(extractedCaseString)
+
+    
