@@ -5,22 +5,18 @@ from crowler import main as Crowler
 
 app = Flask(__name__)
 
-def BuildResponseFromJson(jsonData):     
+def BuildResponseFromJson(jsonData, statusCode, mimeType):     
     response = app.response_class(
         response=jsonData,
-        status=200,
-        mimetype='application/json'
+        status=statusCode,
+        mimetype=mimeType
     )    
     return response
 
 @app.errorhandler(500)
 def handle_bad_request(error):
-    response = app.response_class(
-        response=error,
-        status=500,
-        mimetype='application/text'
-    )    
-    return response #STRING
+      return BuildResponseFromJson(error, 500, 'application/text')
+  
 
 @app.route('/')
 def serviceUp():
@@ -31,7 +27,9 @@ def serviceUp():
 
 @app.route('/crawler', methods=['POST'])
 def crawler():   
-    return BuildResponseFromJson(Crowler.mainFunction(request.get_data()))
+    data = request.get_data()
+    result = Crowler.mainFunction(data)
+    return BuildResponseFromJson(result, 200, 'application/json')
   
 
 if __name__ == '__main__':

@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Crawler elaborations
-crawler/elborations/*
+crawler/elaborations/*
 
 # Crawler unfinished methods
 crawler/src_async
