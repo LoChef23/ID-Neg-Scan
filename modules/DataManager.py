@@ -21,7 +21,8 @@ class DataManager():
         rowPosition = 0
         for row in rows:            
             if rowPosition != 0:
-                columns = row.find_all('td')                           
+                columns = row.find_all('td')      
+                                    
                 columnPosition = 0        
                 try:        
                     registrationdate = self.convert_registration_date(columns[2].get_text())                                    

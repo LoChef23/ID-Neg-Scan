@@ -1,0 +1,5 @@
+{
+    "elaborationsDirectory": "..//elaborations//",
+    "fixedPagePrefix": "/list_perkara/page/",
+    "recoveryTentatives": 3
+}

@@ -1,11 +1,13 @@
 from flask import Flask
 from flask import request
-from waitress import serve
-from crowler import main as Crowler
+import json
+import traceback
+#from waitress import serve
+from Crawler import Crawler
 
 app = Flask(__name__)
 
-def BuildResponseFromJson(jsonData, statusCode, mimeType):     
+def buildResponseFromJson(jsonData, statusCode, mimeType):     
     response = app.response_class(
         response=jsonData,
         status=statusCode,
@@ -15,8 +17,7 @@ def BuildResponseFromJson(jsonData, statusCode, mimeType):
 
 @app.errorhandler(500)
 def handle_bad_request(error):
-      return BuildResponseFromJson(error, 500, 'application/text')
-  
+    return buildResponseFromJson(traceback.format_exc(), 500, 'application/text')
 
 @app.route('/')
 def serviceUp():
@@ -24,15 +25,15 @@ def serviceUp():
     app.register_error_handler(500, handle_bad_request)
     return "Hello Python!"
 
-
-@app.route('/crawler', methods=['POST'])
-def crawler():   
-    data = request.get_data()
-    result = Crowler.mainFunction(data)
-    return BuildResponseFromJson(result, 200, 'application/json')
-  
+@app.route('/RunIncrementalNegativEventCrawler', methods=['POST'])
+def runIncremental():   
+    requestData = request.json
+    print(requestData)
+    crawler = Crawler()
+    result = crawler.run(requestData)
+    return buildResponseFromJson(result, 200, 'application/json')
 
 if __name__ == '__main__':
     # Run the app server on localhost:4449
-    #app.run('localhost', 4449)  #FLASK       
-    serve(app, host='0.0.0.0', port = 4449) #WAITRESS
+    app.run('localhost', 4449)  #FLASK       
+    #serve(app, host='0.0.0.0', port = 4449) #WAITRESS
